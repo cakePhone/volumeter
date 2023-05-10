@@ -1,6 +1,7 @@
-# volumeter
+# Volumeter
 
 A simple audio volume measure and ear health/age test website.
+To access this website, go to: https://cakephone.github.io/volumeter
 
 ## Eco-escolas (Ler Aqui)
 Este projeto foi criado pelo aluno Miguel Santos da turma 11CT1 (Ano Letivo 2022/2023) da Escola Secundária de Amarante. A ideia foi dada por um outro aluno que prefere manter-se anónimo.
