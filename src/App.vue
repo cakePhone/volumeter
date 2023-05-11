@@ -1,7 +1,7 @@
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
   <div class="decibel-loudness-container">
     <p id="decibel-text">Pressione Começar para medir o volume.</p>
+    <progress id="volume-bar" max="0.5" value="0"></progress>
     <button @click="getLocalStream">Começar</button>
   </div>
 </template>
@@ -9,9 +9,6 @@
 <script>
 export default {
   name: 'App',
-  data() {
-
-  },
   methods: {
     async getLocalStream() {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
@@ -25,12 +22,19 @@ export default {
           analyserNode.getFloatTimeDomainData(pcmData);
           let sumSquares = 0.0;
           for (const amplitude of pcmData) { sumSquares += amplitude*amplitude; }
-          document.getElementById("decibel-text").innerText = Math.round(20 * Math.log(Math.sqrt(sumSquares / pcmData.length)) + 136) + 'dB';
-          setTimeout(() => {
-            window.requestAnimationFrame(onFrame);  
-          }, 100);
+          document.getElementById("volume-bar").value = Math.sqrt(sumSquares / pcmData.length);
+          
+          window.requestAnimationFrame(onFrame);
       };
       window.requestAnimationFrame(onFrame);
+      
+      let count = 5;
+      let counter = setInterval(() => {
+        document.getElementById("decibel-text").innerHTML = 'Espere pelo buffer: ' + count;
+        if(count === 0) { document.getElementById("decibel-text").innerText = "Pronto!"; clearInterval(counter); }
+        console.log(count)
+        count = count - 1;
+      }, 1000);
     }
   }
 }
@@ -44,14 +48,19 @@ export default {
   text-align: center;
   color: #2c3e50;
   margin-top: 60px;
+
+  display: flex;
+  justify-content: center;
+
+  height: 100vh;
 }
 
 .decibel-loudness-container {
   border: 1px solid black;
 
-  position: absolute;
+  /* position: absolute;
   top: calc(50vh - 5rem);
-  left: calc(50vw - 10rem);
+  left: calc(50vw - 10rem); */
 
   height: 10rem;
   width: 20rem;
