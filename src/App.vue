@@ -1,6 +1,6 @@
 <template>
-  <h1 class="text">Volumeter</h1>
   <div class="main-container">
+    <h1 class="text">Volumeter</h1>
     <div id="volume-measure-card" class="content-card">
       <h2 class="card-name text">Barulhómetro</h2>
       <p class="content-text text">Meça a intensidade do barulho captado pelo dispositivo</p>
@@ -110,13 +110,12 @@ html, body {
 
 #app {
   display: flex;
-  flex-direction: column;
-  align-items: left;
+  justify-content: center;
 
-  padding: 2rem;
+  padding: 1rem;
 
-  height: calc(100vh - 4rem);
-  width: calc(100vw - 4rem);
+  height: calc(100vh - 2rem);
+  width: calc(100vw - 2rem);
 }
 
 h1 {
@@ -130,7 +129,7 @@ h1 {
 
 .main-container {
   height: fit-content;
-  width: fit-content;
+  width: min(35rem, calc(100% - 2rem));
 
   display: flex;
   flex-wrap: wrap;
@@ -139,22 +138,23 @@ h1 {
 
 .content-card {
   position: relative;
-
+  
   height: fit-content;
-  min-width: min(310px, 90vw);
-  max-width: min(310px, 90vw);
+  min-width: 290px;
+  width: fit-content;
+  max-width: 100%;
   
   display: flex;
   align-items: center;
   flex-direction: column;
-
+  
   padding: 1.25rem;
   
   border-radius: 1rem;
   background: var(--secondary-container);
-
+  
   box-shadow: 0px 5px 5px #00000076;
-
+  
   margin: 1rem 1rem 1rem 0;
 }
 
@@ -182,7 +182,6 @@ h1 {
 }
 
 #volume-measure-card {
-  width: 310px;
   margin-left: 0;
 }
 
@@ -191,7 +190,7 @@ button {
 
   position: relative;
   bottom: 0;
-  
+
   font-family: 'Roboto';
   font-weight: 450;
   font-size: 15px;
