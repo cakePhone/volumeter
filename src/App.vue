@@ -1,14 +1,21 @@
 <template>
   <h1 class="text">Volumeter</h1>
   <div class="main-container">
-    <div id="volume-measure-container" class="content-container">
-      <h2 class="container-name text">Barulhómetro</h2>
-      <p class="content-text text">Mede a intensidade do barulho captado pelo dispositivo</p>
+    <div id="volume-measure-card" class="content-card">
+      <h2 class="card-name text">Barulhómetro</h2>
+      <p class="content-text text">Meça a intensidade do barulho captado pelo dispositivo</p>
       <div id="meter-container">
         <meter id="volume-bar" max="0.7" value="0"></meter>
         <p id="volume-text" class="info-text text">Pressione Começar para medir o volume.</p>
       </div>
       <button @click="getLocalStream">Começar</button>
+    </div>
+
+    <div class="content-card">
+      <h2 class="card-name text">Saúde Auditiva</h2>
+      <p class="content-text text">Meça a sua saúde auditiva a partir deste teste rápido. Quando estiver pronto, clique começar. Quando parar de ouvir a frequência sonora, clique parar. (É recomendado o uso de fones de ouvido e o volume no máximo)</p>
+      <div id="test-container"></div>
+      <button @click="!playingAudioTest; playNote()">Começar</button>
     </div>
   </div>
 </template>
@@ -18,12 +25,14 @@ export default {
   name: 'App',
   data() {
     return {
-      count: 3
+      count: 3,
+      frequency: 200,
+      playingAudioTest: false,
     }
   },
   methods: {
     async getLocalStream() {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false })
       const audioContext = new AudioContext();
       const mediaStreamAudioSourceNode = audioContext.createMediaStreamSource(stream);
       const analyserNode = audioContext.createAnalyser();
@@ -45,6 +54,21 @@ export default {
         else { document.getElementById("volume-text").innerHTML = 'Espere pelo buffer: ' + this.count; }
         this.count = this.count - 1;
       }, 1000);
+    },
+
+    playNote() {
+      let audioCtx = new(window.AudioContext || window.webkitAudioContext)();
+
+      let oscillator = audioCtx.createOscillator()
+      let frequencyTest = setInterval(() => {
+        oscillator.type = 'sine';
+        oscillator.frequency.value = this.frequency; // value in hertz
+        oscillator.connect(audioCtx.destination);
+        if(!this.playingAudioTest) { clearInterval(frequencyTest); return } else { oscillator.start(); }
+        oscillator.stop(1)
+        
+        this.frequency++;
+      }, 1001);
     }
   }
 }
@@ -87,11 +111,12 @@ html, body {
 #app {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: left;
 
   padding: 2rem;
 
   height: calc(100vh - 4rem);
+  width: calc(100vw - 4rem);
 }
 
 h1 {
@@ -100,27 +125,40 @@ h1 {
   text-align: left;
   color: var(--on-background);
   
-  width: 22rem;
+  width: 100%;
 }
 
 .main-container {
   height: fit-content;
   width: fit-content;
+
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: left;
 }
 
-.content-container {
+.content-card {
   position: relative;
+
+  height: fit-content;
+  min-width: min(310px, 90vw);
+  max-width: min(310px, 90vw);
   
   display: flex;
   align-items: center;
-  
+  flex-direction: column;
+
   padding: 1.25rem;
   
   border-radius: 1rem;
   background: var(--secondary-container);
+
+  box-shadow: 0px 5px 5px #00000076;
+
+  margin: 1rem 1rem 1rem 0;
 }
 
-.container-name {
+.card-name {
   color: var(--on-secondary-container);
 
   font-weight: 400;
@@ -143,24 +181,23 @@ h1 {
   text-shadow: 0px 2px 1px #00000036;
 }
 
-#volume-measure-container {
-  height: 12rem;
-  width: 20rem;
-
-  flex-direction: column;
+#volume-measure-card {
+  width: 310px;
+  margin-left: 0;
 }
 
 button {
-  position: absolute;
-  bottom: 1rem;
-  right: 1rem;
-
   height: 40px;
 
+  position: relative;
+  bottom: 0;
+  
   font-family: 'Roboto';
   font-weight: 450;
   font-size: 15px;
   color: var(--on-primary);
+
+  margin-left: calc(100% - 90px);
 
   border: none;
   border-radius: 2rem;
@@ -180,7 +217,7 @@ button:active {
 
 button:hover {
   box-shadow: 0px 2px 5px #00000076;
-  bottom: 1.1rem;
+  bottom: 0.1rem;
 }
 
 #meter-container {
@@ -194,7 +231,7 @@ button:hover {
 }
 
 meter {
-  width: 19.5rem;
+  width: 100%;
 }
 
 meter::-webkit-meter-bar {
