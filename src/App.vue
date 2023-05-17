@@ -1,22 +1,32 @@
 <template>
   <div class="main-container">
+
     <h1 class="text">Volumeter</h1>
+
+    <div class="content-card info-card">
+      <h2 class="card-name text">Poluição Sonora</h2>
+      <p class="content-text text">(Trabalho pendente)Lorem ipsum, dolor sit amet consectetur adipisicing elit. At numquam facere nesciunt iure voluptatem ipsam animi assumenda modi, tenetur fugiat. Incidunt est repellendus, eligendi recusandae obcaecati alias commodi aliquid vel at, quasi nobis tempore officia molestias? Veniam, debitis sint? Esse omnis nam minima laboriosam facilis nesciunt exercitationem laudantium deleniti! Fugit quia porro facere iste, labore, dolores officia harum et eveniet voluptas odit inventore voluptates sit rem magnam? Ipsum minima impedit officiis repudiandae qui optio quasi sunt aliquid maiores tenetur fugit at inventore, eum aperiam accusantium. Aperiam provident architecto ducimus? Reiciendis aliquid dolores eveniet minima omnis nulla voluptas architecto alias eum!</p>
+    </div>
+
     <div id="volume-measure-card" class="content-card">
       <h2 class="card-name text">Barulhómetro</h2>
       <p class="content-text text">Meça a intensidade do barulho captado pelo dispositivo</p>
-      <div id="meter-container">
-        <meter id="volume-bar" max="0.7" value="0"></meter>
-        <p id="volume-text" class="info-text text">Pressione Começar para medir o volume.</p>
+      <div class="meter-container">
+        <meter id="volume-bar" max="0.7" :value="volumeBarValue"></meter>
+        <p class="info-text text">Pressione Começar para medir o volume.</p>
       </div>
-      <button @click="getLocalStream">Começar</button>
+      <button @click="toggleRecord()">{{ isRecording ? 'Parar' : 'Começar' }}</button>
     </div>
 
     <div class="content-card">
       <h2 class="card-name text">Saúde Auditiva</h2>
-      <p class="content-text text">Meça a sua saúde auditiva a partir deste teste rápido. Quando estiver pronto, clique começar. Quando parar de ouvir a frequência sonora, clique parar. (É recomendado o uso de fones de ouvido e o volume no máximo)</p>
-      <div id="test-container"></div>
-      <button @click="!playingAudioTest; playNote()">Começar</button>
+      <p class="content-text text">Meça a sua saúde auditiva a partir deste teste rápido. Quando estiver pronto, clique no vídeo abaixo para começar. Quando começar de ouvir a frequência sonora, pause e veja o seu resultado.<br>
+                                   (É recomendado o uso de fones de ouvido e o volume no máximo)
+      </p>
+      <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/-Mm3avgcXDw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+      <p class="info-text text">Créditos ao autor do vídeo.</p>
     </div>
+
   </div>
 </template>
 
@@ -25,50 +35,50 @@ export default {
   name: 'App',
   data() {
     return {
-      count: 3,
-      frequency: 200,
-      playingAudioTest: false,
+      isPlaying: false,
+      currentFrequency: null,
+      analyser: null,
+      audioContext: null,
+      source: null,
+      lastMaxFrequency: null,
+      gainNode: null,
+
+      isRecording: false,
+      volumeBarValue: null,
     }
   },
   methods: {
+    toggleRecord() {
+      if(this.isRecording) {
+        this.isRecording = false;
+      } else {
+        this.getLocalStream();
+      }
+    },
+
     async getLocalStream() {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false })
-      const audioContext = new AudioContext();
+      const audioContext = new (window.AudioContext || window.webkitAudioContext)();
       const mediaStreamAudioSourceNode = audioContext.createMediaStreamSource(stream);
       const analyserNode = audioContext.createAnalyser();
       mediaStreamAudioSourceNode.connect(analyserNode);
 
+      this.isRecording = true;
+
       const pcmData = new Float32Array(analyserNode.fftSize);
       const onFrame = () => {
+        if(this.isRecording) {
           analyserNode.getFloatTimeDomainData(pcmData);
           let sumSquares = 0.0;
           for (const amplitude of pcmData) { sumSquares += amplitude*amplitude; }
-          document.getElementById("volume-bar").value = Math.sqrt(sumSquares / pcmData.length);
+          this.volumeBarValue = Math.sqrt(sumSquares / pcmData.length);
           
           window.requestAnimationFrame(onFrame);
+        } else {
+          this.volumeBarValue = null;
+        }
       };
       window.requestAnimationFrame(onFrame);
-      
-      let counter = setInterval(() => {
-        if(this.count < 1) { document.getElementById("volume-text").innerText = "Pronto!"; clearInterval(counter); }
-        else { document.getElementById("volume-text").innerHTML = 'Espere pelo buffer: ' + this.count; }
-        this.count = this.count - 1;
-      }, 1000);
-    },
-
-    playNote() {
-      let audioCtx = new(window.AudioContext || window.webkitAudioContext)();
-
-      let oscillator = audioCtx.createOscillator()
-      let frequencyTest = setInterval(() => {
-        oscillator.type = 'sine';
-        oscillator.frequency.value = this.frequency; // value in hertz
-        oscillator.connect(audioCtx.destination);
-        if(!this.playingAudioTest) { clearInterval(frequencyTest); return } else { oscillator.start(); }
-        oscillator.stop(1)
-        
-        this.frequency++;
-      }, 1001);
     }
   }
 }
@@ -105,6 +115,7 @@ export default {
 
 html, body {
   margin: 0;
+  width: fit-content;
   background-color: var(--background);
 }
 
@@ -112,13 +123,13 @@ html, body {
   display: flex;
   justify-content: center;
 
-  padding: 1rem;
-
-  height: calc(100vh - 2rem);
-  width: calc(100vw - 2rem);
+  height: fit-content;
+  width: 100%;
 }
 
 h1 {
+  margin-top: 2.5rem;
+  
   font-weight: 400;
   font-size: 2.5rem;
   text-align: left;
@@ -129,7 +140,7 @@ h1 {
 
 .main-container {
   height: fit-content;
-  width: min(35rem, calc(100% - 2rem));
+  width: calc(100% - 4rem);
 
   display: flex;
   flex-wrap: wrap;
@@ -140,9 +151,7 @@ h1 {
   position: relative;
   
   height: fit-content;
-  min-width: 290px;
-  width: fit-content;
-  max-width: 100%;
+  width: min(20rem, calc(100% - 2rem));
   
   display: flex;
   align-items: center;
@@ -154,8 +163,23 @@ h1 {
   background: var(--secondary-container);
   
   box-shadow: 0px 5px 5px #00000076;
+
+  margin-bottom: 2rem;
+}
+
+.info-card {
+  width: 100%;
+}
+
+@media screen and (min-width: 600px) {
+  .main-container {
+    width: calc(100% - 2rem);
+    margin-left: 2rem;
+  }
   
-  margin: 1rem 1rem 1rem 0;
+  .content-card {
+    margin-right: 2rem;
+  }
 }
 
 .card-name {
@@ -219,7 +243,7 @@ button:hover {
   bottom: 0.1rem;
 }
 
-#meter-container {
+.meter-container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -227,6 +251,15 @@ button:hover {
   margin: 1rem 0;
 
   width: 100%;
+}
+
+iframe {
+  height: 15rem;
+  width: 100%;
+
+  margin-top: 1rem;
+
+  border-radius: 1rem;
 }
 
 meter {
