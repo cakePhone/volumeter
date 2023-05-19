@@ -23,7 +23,7 @@
       <p class="content-text text">Meça a sua saúde auditiva a partir deste teste rápido. Quando estiver pronto, clique no vídeo abaixo para começar. Quando começar de ouvir a frequência sonora, pause e veja o seu resultado.<br>
                                    (É recomendado o uso de fones de ouvido e o volume no máximo)
       </p>
-      <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/-Mm3avgcXDw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
+      <iframe src="https://www.youtube-nocookie.com/embed/-Mm3avgcXDw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
       <p class="info-text text">Créditos ao autor do vídeo.</p>
     </div>
 
@@ -151,7 +151,7 @@ h1 {
   position: relative;
   
   height: fit-content;
-  width: min(20rem, calc(100% - 2rem));
+  width: min(25rem, calc(100% - 2rem));
   
   display: flex;
   align-items: center;
@@ -260,6 +260,8 @@ iframe {
   margin-top: 1rem;
 
   border-radius: 1rem;
+
+  box-shadow: 0px 5px 5px #00000036
 }
 
 meter {
