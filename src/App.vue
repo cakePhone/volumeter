@@ -20,7 +20,7 @@
 
     <div class="content-card">
       <h2 class="card-name text">Saúde Auditiva</h2>
-      <p class="content-text text">Meça a sua saúde auditiva a partir deste teste rápido. Quando estiver pronto, clique no vídeo abaixo para começar. Quando começar de ouvir a frequência sonora, pause e veja o seu resultado.<br>
+      <p class="content-text text">Meça a sua saúde auditiva a partir deste teste rápido. Quando estiver pronto, clique no vídeo abaixo para começar. Quando começar a ouvir a frequência sonora, pause e veja o seu resultado.<br>
                                    (É recomendado o uso de fones de ouvido e o volume no máximo)
       </p>
       <iframe src="https://www.youtube-nocookie.com/embed/-Mm3avgcXDw" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"></iframe>
