@@ -1,6 +1,6 @@
 # Volumeter
 
-A simple audio volume measure and ear health/age test website.
+A simple audio volume measure and ear health/age test website with an educative twist.
 To access this website, go to: https://cakephone.github.io/volumeter
 
 ## Eco-escolas (Ler Aqui)
