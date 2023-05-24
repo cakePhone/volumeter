@@ -1,23 +1,13 @@
 <template>
   <div class="main-container">
 
-    <h1 class="text">Volumeter</h1>
+    <h1 class="text">Poluição Sonora e as Suas Consequências</h1>
 
     <div class="content-card info-card">
       <h2 class="card-name text">Poluição Sonora</h2>
       <p class="content-text text">(Trabalho pendente)Lorem ipsum, dolor sit amet consectetur adipisicing elit. At numquam facere nesciunt iure voluptatem ipsam animi assumenda modi, tenetur fugiat. Incidunt est repellendus, eligendi recusandae obcaecati alias commodi aliquid vel at, quasi nobis tempore officia molestias? Veniam, debitis sint? Esse omnis nam minima laboriosam facilis nesciunt exercitationem laudantium deleniti! Fugit quia porro facere iste, labore, dolores officia harum et eveniet voluptas odit inventore voluptates sit rem magnam? Ipsum minima impedit officiis repudiandae qui optio quasi sunt aliquid maiores tenetur fugit at inventore, eum aperiam accusantium. Aperiam provident architecto ducimus? Reiciendis aliquid dolores eveniet minima omnis nulla voluptas architecto alias eum!</p>
     </div>
-
-    <div id="volume-measure-card" class="content-card">
-      <h2 class="card-name text">Barulhómetro</h2>
-      <p class="content-text text">Meça a intensidade do barulho captado pelo dispositivo</p>
-      <div class="meter-container">
-        <meter id="volume-bar" max="0.7" :value="volumeBarValue"></meter>
-        <p class="info-text text">Pressione Começar para medir o volume.</p>
-      </div>
-      <button @click="toggleRecord()">{{ isRecording ? 'Parar' : 'Começar' }}</button>
-    </div>
-
+    
     <div class="content-card">
       <h2 class="card-name text">Saúde Auditiva</h2>
       <p class="content-text text">Meça a sua saúde auditiva a partir deste teste rápido. Quando estiver pronto, clique no vídeo abaixo para começar. Quando começar a ouvir a frequência sonora, pause e veja o seu resultado.<br>
@@ -27,6 +17,23 @@
       <p class="info-text text">Créditos ao autor do vídeo.</p>
     </div>
 
+    <div id="volume-measure-card" class="content-card">
+      <h2 class="card-name text">Barulhómetro</h2>
+      <p class="content-text text">Meça a intensidade do barulho captado pelo dispositivo.<br>
+                                   Muito barulho ao ser redor por extensos periodos de tempo podem prejudicar a sua audição.
+      </p>
+      <div class="meter-container">
+        <meter id="volume-bar" max="0.7" :value="volumeBarValue"></meter>
+        <p class="info-text text">Pressione Começar para medir o volume.</p>
+      </div>
+      <button @click="toggleRecord()">{{ isRecording ? 'Parar' : 'Começar' }}</button>
+    </div>
+
+    <!-- <div class="content-card">
+      <h2 class="card-name text">Créditos</h2>
+      <p class="content-text text">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Magni, ab!</p>
+    </div> -->
+
   </div>
 </template>
 
@@ -35,14 +42,6 @@ export default {
   name: 'App',
   data() {
     return {
-      isPlaying: false,
-      currentFrequency: null,
-      analyser: null,
-      audioContext: null,
-      source: null,
-      lastMaxFrequency: null,
-      gainNode: null,
-
       isRecording: false,
       volumeBarValue: null,
     }
@@ -196,7 +195,10 @@ h1 {
 .content-text {
   color: var(--on-secondary-container);
   height: fit-content;
-  width: fit-content;
+  width: 100%;
+
+  font-size: 1.1rem;
+  line-height: 1.6rem;
 
   margin: 0;
 }
